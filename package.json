@@ -1,0 +1,23 @@
+{
+  "name": "ilp-curl",
+  "version": "1.0.0",
+  "description": "curl-like tool that makes ILP paid requests",
+  "main": "index.js",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "ilp-plugin-xrp-escrow": "^1.0.3",
+    "lodash": "^4.17.4",
+    "superagent": "^3.6.0",
+    "superagent-ilp": "^0.0.1",
+    "yargs": "^9.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "ilp-curl": "./index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
