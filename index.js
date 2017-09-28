@@ -100,10 +100,10 @@ if (rawData) {
   if (argv.data && rawData.startsWith('@')) {
     debug('loading file', rawData.substring(1))
     const contents = fs.readFileSync(rawData.substring(1))
-    request.type('application/octet-stream')
-    request.send(contents)
+    request.type(argv.json ? 'application/json' : 'application/octet-stream')
+    request.send(argv.json ? contents.toString('utf8') : contents)
   } else {
-    request.send(data)
+    request.send(rawData)
   }
 } else if (argv.form) {
   for (const field of argv.form) {
