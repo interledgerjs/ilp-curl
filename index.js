@@ -3,6 +3,11 @@ const IlpAgent = require('superagent-ilp')
 const debug = require('debug')('ilp-curl')
 const fs = require('fs')
 
+if (!process.env.ILP_CREDENTIALS) {
+  console.error('environment variable ILP_CREDENTIALS must be specified to use this tool.')
+  process.exit(1)
+}
+
 const Plugin = require(process.env.ILP_PLUGIN || 'ilp-plugin-xrp-escrow')
 const ilpCredentials = JSON.parse(process.env.ILP_CREDENTIALS)
 const plugin = new Plugin(ilpCredentials)
@@ -22,6 +27,7 @@ const die = (message) => {
 }
 
 const argv = require('yargs')
+  .usage('ilp-curl <url> [options]')
   .option('data', {
     alias: 'd',
     describe: 'body data'

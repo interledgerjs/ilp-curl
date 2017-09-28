@@ -33,10 +33,13 @@ $ ilp-curl localhost:3000/upload --data @image.png
 ## More Options
 
 ```
+ilp-curl <url> [options]
+
 Options:
   --help            Show help                                          [boolean]
   --version         Show version number                                [boolean]
   --data, -d        body data
+  --data-raw        body data that does not load file with @
   --json, -j        send data as json
   --header, -H      header with data                       [array] [default: []]
   --form, -F        form data                              [array] [default: []]
