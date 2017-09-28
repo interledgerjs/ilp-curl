@@ -24,6 +24,10 @@ $ ilp-curl -X GET ilp.example.com/images
 
 # make a paid and authenticated request
 $ ilp-curl -X GET ilp.example.com/images --user admin:password
+
+# upload a file with unhash
+$ ilp-curl localhost:3000/upload --data @image.png
+# --> { digest: '3b4f5076101d7a3890056bdda09b1b7d37f24725ba11344fb46a7f2dffe74a55' }
 ```
 
 ## More Options
