@@ -1,7 +1,7 @@
 const agent = require('superagent')
 const IlpAgent = require('superagent-ilp')
 const debug = require('debug')('ilp-curl')
-
+const fs = require('fs')
 
 const Plugin = require(process.env.ILP_PLUGIN || 'ilp-plugin-xrp-escrow')
 const ilpCredentials = JSON.parse(process.env.ILP_CREDENTIALS)
@@ -25,6 +25,9 @@ const argv = require('yargs')
   .option('data', {
     alias: 'd',
     describe: 'body data'
+  })
+  .option('data-raw', {
+    describe: 'body data that does not load file with @'
   })
   .option('json', {
     alias: 'j',
@@ -78,22 +81,41 @@ const splitOnFirst = (string, delim) => {
 }
 
 const url = argv.url || argv._[0]
-if (argv.form && argv.data) die('cannot specify --form (-F) and --data (-d)')
+const rawData = argv['data-raw'] || argv.data
+if (argv.form.length && rawData) die('cannot specify --form (-F) and --data (-d)')
+if (argv.data && argv['data-raw']) die('cannot specify --data-raw and -data (-d)')
 if (argv.url && argv._[0]) die('cannot specify --url and positional <url>')
 if (!url) die('must specify a URL with positional <url> or --url')
-if (argv.json) argv.header.push('Content-Type: application/json')
 const request = agent(argv.request, url)
   .redirects(argv['max-redirs'])
 
-if (argv.data) {
-  request.send(data)
+if (argv.json) {
+  request.type('application/json')
+} else {
+  request.type('application/x-www-form-urlencoded')
+}
+
+if (rawData) {
+  // the '@' causes a file to be loaded
+  if (argv.data && rawData.startsWith('@')) {
+    debug('loading file', rawData.substring(1))
+    const contents = fs.readFileSync(rawData.substring(1))
+    request.type('application/octet-stream')
+    request.send(contents)
+  } else {
+    request.send(data)
+  }
 } else if (argv.form) {
   for (const field of argv.form) {
-    if (argv.json) {
-      const [ key, value ] = splitOnFirst(field, '=')
-      request.send({ [key]: value })
+    const [ key, value ] = splitOnFirst(field, '=')
+    if (value.startsWith('@')) {
+      debug('loading file', rawData.substring(1))
+      const valueContents = fs
+        .readFileSync(value.substring(1))
+        .toString('utf8')
+      request.send({ [key]: valueContents })
     } else {
-      request.send(field)
+      request.send({ [key]: value })
     }
   }
 }
