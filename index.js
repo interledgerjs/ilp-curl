@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const agent = require('superagent')
 const IlpAgent = require('superagent-ilp')
 const debug = require('debug')('ilp-curl')
