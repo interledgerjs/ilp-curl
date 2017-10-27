@@ -3,15 +3,7 @@ const agent = require('superagent')
 const IlpAgent = require('superagent-ilp')
 const debug = require('debug')('ilp-curl')
 const fs = require('fs')
-
-if (!process.env.ILP_CREDENTIALS) {
-  console.error('environment variable ILP_CREDENTIALS must be specified to use this tool.')
-  process.exit(1)
-}
-
-const Plugin = require(process.env.ILP_PLUGIN || 'ilp-plugin-xrp-escrow')
-const ilpCredentials = JSON.parse(process.env.ILP_CREDENTIALS)
-const plugin = new Plugin(ilpCredentials)
+const plugin = require('ilp-plugin')()
 const paidAgent = IlpAgent(agent, plugin)
 
 plugin.on('outgoing_prepare', (transfer) => {
@@ -71,7 +63,7 @@ const argv = require('yargs')
   })
   .option('max-amount', {
     alias: 'a',
-    describe: `maximum amount (in ${plugin.getInfo().currencyCode})`,
+    describe: `maximum amount (in plugin's currency units)`,
     default: 1
   })
   .argv
@@ -138,6 +130,8 @@ if (argv.user) {
 }
 
 async function run () {
+  await plugin.connect()
+
   const amount = +argv['max-amount'] * Math.pow(10, plugin.getInfo().currencyScale)
   const result = await request
     .pay(amount)
