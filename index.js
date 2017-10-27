@@ -136,7 +136,7 @@ async function run () {
   const result = await request
     .pay(amount)
 
-  console._log(result.body)
+  console._log(result.text)
   process.exit(0)
 }
 
