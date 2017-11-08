@@ -1,6 +1,6 @@
 {
   "name": "ilp-curl",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "curl-like tool that makes ILP paid requests",
   "main": "index.js",
   "dependencies": {
