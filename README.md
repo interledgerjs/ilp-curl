@@ -16,7 +16,7 @@ $ export ILP_CREDENTIALS='{"server":"wss://s.altnet.rippletest.net:51233","secre
 # make a paid POST request with JSON parameters
 $ ilp-curl ilp.example.com/sms --json -F to='+15551234567' -F text='hello'
 
-# make a paid POST request with JSON parameters and a max amount of 0.1 XRP
+# make a paid POST request with JSON parameters and a max source amount of 0.1 XRP
 $ ilp-curl ilp.example.com/sms --json -F to='+15551234567' -F text='hello' --amount 0.1
 
 # make a paid GET request
