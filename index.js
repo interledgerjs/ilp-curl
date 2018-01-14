@@ -6,14 +6,6 @@ const fs = require('fs')
 const plugin = require('ilp-plugin')()
 const paidAgent = IlpAgent(agent, plugin)
 
-plugin.on('outgoing_prepare', (transfer) => {
-  debug('prepared payment for', transfer.amount)
-})
-
-plugin.on('outgoing_fulfill', (transfer) => {
-  debug('executed payment for', transfer.amount)
-})
-
 const die = (message) => {
   console.error(message)
   process.exit(1)
@@ -64,13 +56,9 @@ const argv = require('yargs')
   .option('max-amount', {
     alias: 'a',
     describe: `maximum amount (in plugin's currency units)`,
-    default: 1
+    default: 1000
   })
   .argv
-
-// suppress things from ajv
-console._log = console.log
-console.log = () => {}
 
 const splitOnFirst = (string, delim) => {
   const splitAt = string.indexOf(delim)
@@ -130,14 +118,16 @@ if (argv.user) {
 }
 
 async function run () {
+  debug('running')
   await plugin.connect()
 
-  const amount = +argv['max-amount'] * Math.pow(10, plugin.getInfo().currencyScale)
+  debug('connected')
+  const amount = +argv['max-amount']
   const result = await request
     .pay(amount)
 
-  console._log(result.text)
+  console.log(result.text)
   process.exit(0)
 }
 
-run().catch(e => die(e.message))
+run().catch(e => die((e.res && e.res.text) || e.message))
