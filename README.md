@@ -14,16 +14,16 @@ $ export ILP_PLUGIN='ilp-plugin-xrp-escrow'
 $ export ILP_CREDENTIALS='{"server":"wss://s.altnet.rippletest.net:51233","secret":"..."}'
 
 # make a paid POST request with JSON parameters
-$ ilp-curl ilp.example.com/sms --json -F to='+15551234567' -F text='hello'
+$ ilp-curl -X POST ilp.example.com/sms --json -F to='+15551234567' -F text='hello'
 
-# make a paid POST request with JSON parameters and a max source amount of 0.1 XRP
-$ ilp-curl ilp.example.com/sms --json -F to='+15551234567' -F text='hello' --amount 0.1
+# make a paid POST request with JSON parameters and a max amount of 1000 XRP drops
+$ ilp-curl -X POST ilp.example.com/sms --json -F to='+15551234567' -F text='hello' --amount 1000
 
 # make a paid GET request
-$ ilp-curl -X GET ilp.example.com/images
+$ ilp-curl ilp.example.com/images
 
 # make a paid and authenticated request
-$ ilp-curl -X GET ilp.example.com/images --user admin:password
+$ ilp-curl ilp.example.com/images --user admin:password
 
 # upload a file with unhash
 $ ilp-curl localhost:3000/upload --data @image.png
@@ -44,8 +44,8 @@ Options:
   --header, -H      header with data                       [array] [default: []]
   --form, -F        form data                              [array] [default: []]
   --max-redirs      max number of redirects                [number] [default: 0]
-  --request, -X     http method to use                         [default: "POST"]
+  --request, -X     http method to use                          [default: "GET"]
   --url             url to fetch
   --user, -u        <user:password> for basic auth
-  --max-amount, -a  maximum amount (in currency of ILP plugin)      [default: 1]
+  --max-amount, -a  maximum amount                               [default: 1000]
 ```
