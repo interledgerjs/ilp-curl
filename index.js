@@ -44,7 +44,7 @@ const argv = require('yargs')
   .option('request', {
     describe: 'http method to use',
     alias: 'X',
-    default: 'POST'
+    default: 'GET'
   })
   .option('url', {
     describe: 'url to fetch'
@@ -55,7 +55,7 @@ const argv = require('yargs')
   })
   .option('max-amount', {
     alias: 'a',
-    describe: `maximum amount (in plugin's currency units)`,
+    describe: `maximum amount`,
     default: 1000
   })
   .argv
