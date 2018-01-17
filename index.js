@@ -56,7 +56,7 @@ const argv = require('yargs')
   .option('max-amount', {
     alias: 'a',
     describe: `maximum amount`,
-    default: 1000
+    default: 100000
   })
   .argv
 
