@@ -5,9 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "debug": "^3.1.0",
-    "ilp-plugin": "0.0.1",
-    "ilp-plugin-payment-channel-framework": "^1.1.4",
-    "ilp-plugin-xrp-escrow": "^1.0.3",
+    "ilp-plugin": "3.0.0",
     "lodash": "^4.17.4",
     "superagent": "^3.6.0",
     "superagent-ilp": "^0.2.0",
