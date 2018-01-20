@@ -10,7 +10,7 @@
     "ilp-plugin-xrp-escrow": "^1.0.3",
     "lodash": "^4.17.4",
     "superagent": "^3.6.0",
-    "superagent-ilp": "^0.0.1",
+    "superagent-ilp": "^0.2.0",
     "yargs": "^9.0.1"
   },
   "devDependencies": {},
