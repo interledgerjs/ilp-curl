@@ -20,7 +20,7 @@ const argv = require('yargs')
   })
   .option('json', {
     alias: 'j',
-    describe: 'send data as json',
+    describe: 'send data as json'
   })
   .option('header', {
     alias: 'H',
