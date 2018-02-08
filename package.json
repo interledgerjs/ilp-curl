@@ -5,10 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "debug": "^3.1.0",
+    "ilp-fetch": "^1.1.0",
     "ilp-plugin": "3.0.0",
-    "lodash": "^4.17.4",
-    "superagent": "^3.6.0",
-    "superagent-ilp": "^0.2.0",
     "yargs": "^9.0.1"
   },
   "devDependencies": {},
