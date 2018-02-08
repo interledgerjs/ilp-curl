@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-const agent = require('superagent')
-const IlpAgent = require('superagent-ilp')
+const fetch = require('ilp-fetch')
 const debug = require('debug')('ilp-curl')
 const fs = require('fs')
 const plugin = require('ilp-plugin')()
-const paidAgent = IlpAgent(agent, plugin)
 
 const die = (message) => {
   console.error(message)
@@ -73,13 +71,13 @@ if (argv.form.length && rawData) die('cannot specify --form (-F) and --data (-d)
 if (argv.data && argv['data-raw']) die('cannot specify --data-raw and -data (-d)')
 if (argv.url && argv._[0]) die('cannot specify --url and positional <url>')
 if (!url) die('must specify a URL with positional <url> or --url')
-const request = agent(argv.request, url)
-  .redirects(argv['max-redirs'])
-
-if (argv.json) {
-  request.type('application/json')
-} else {
-  request.type('application/x-www-form-urlencoded')
+const fetchOptions = {
+  method: argv.request.toUpperCase(),
+  redirect: 'follow',
+  follow: argv['max-redirs'],
+  headers: {
+    'Content-Type': (argv.json ? 'application/json' : 'application/x-www-form-urlencoded')
+  }
 }
 
 if (rawData) {
@@ -87,12 +85,13 @@ if (rawData) {
   if (argv.data && rawData.startsWith('@')) {
     debug('loading file', rawData.substring(1))
     const contents = fs.readFileSync(rawData.substring(1))
-    request.type(argv.json ? 'application/json' : 'application/octet-stream')
-    request.send(argv.json ? contents.toString('utf8') : contents)
+    fetchOptions.headers['Content-Type'] = (argv.json ? 'application/json' : 'application/octet-stream')
+    fetchOptions.body = (argv.json ? contents.toString('utf8') : contents)
   } else {
-    request.send(rawData)
+    fetchOptions.body = rawData
   }
 } else if (argv.form) {
+  const keyValueBody = {}
   for (const field of argv.form) {
     const [ key, value ] = splitOnFirst(field, '=')
     if (value.startsWith('@')) {
@@ -100,21 +99,22 @@ if (rawData) {
       const valueContents = fs
         .readFileSync(value.substring(1))
         .toString('utf8')
-      request.send({ [key]: valueContents })
+      keyValueBody[key] = valueContents
     } else {
-      request.send({ [key]: value })
+      keyValueBody[key] = value
     }
   }
+  fetchOptions.body = JSON.stringify(keyValueBody)
 }
 
 for (const header of argv.header) {
   const [ name, value ] = splitOnFirst(header, ':')
-  request.set(name, value)
+  fetchOptions.headers[name] = value
 }
 
 if (argv.user) {
-  const [ user, pass ] = splitOnFirst(argv.user, ':')
-  request.auth(user, pass)
+  fetchOptions.headers['Authorization'] = 'Basic ' +
+    Buffer.from(argv.user).toString('base64')
 }
 
 async function run () {
@@ -122,11 +122,13 @@ async function run () {
   await plugin.connect()
 
   debug('connected')
-  const amount = +argv['max-amount']
-  const result = await request
-    .pay(amount)
+  fetchOptions.plugin = plugin
+  fetchOptions.maxPrice = +argv['max-amount']
 
-  console.log(result.text)
+  const result = await fetch(url, fetchOptions)
+  const text = await result.text()
+
+  console.log(text)
   process.exit(0)
 }
 
