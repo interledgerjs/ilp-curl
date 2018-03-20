@@ -31,8 +31,7 @@ const argv = require('yargs')
   .option('form', {
     alias: 'F',
     describe: 'form data',
-    array: true,
-    default: []
+    array: true
   })
   .option('max-redirs', {
     describe: 'max number of redirects',
@@ -67,7 +66,7 @@ const splitOnFirst = (string, delim) => {
 
 const url = argv.url || argv._[0]
 const rawData = argv['data-raw'] || argv.data
-if (argv.form.length && rawData) die('cannot specify --form (-F) and --data (-d)')
+if (argv.form && rawData) die('cannot specify --form (-F) and --data (-d)')
 if (argv.data && argv['data-raw']) die('cannot specify --data-raw and -data (-d)')
 if (argv.url && argv._[0]) die('cannot specify --url and positional <url>')
 if (!url) die('must specify a URL with positional <url> or --url')
