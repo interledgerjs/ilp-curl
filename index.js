@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const fetch = require('ilp-fetch')
-const debug = require('debug')('ilp-curl')
+const log = require('ilp-logger')('ilp-curl')
 const fs = require('fs')
 const plugin = require('ilp-plugin')()
 
@@ -82,7 +82,7 @@ const fetchOptions = {
 if (rawData) {
   // the '@' causes a file to be loaded
   if (argv.data && rawData.startsWith('@')) {
-    debug('loading file', rawData.substring(1))
+    log.info('loading file', rawData.substring(1))
     const contents = fs.readFileSync(rawData.substring(1))
     fetchOptions.headers['Content-Type'] = (argv.json ? 'application/json' : 'application/octet-stream')
     fetchOptions.body = (argv.json ? contents.toString('utf8') : contents)
@@ -94,7 +94,7 @@ if (rawData) {
   for (const field of argv.form) {
     const [ key, value ] = splitOnFirst(field, '=')
     if (value.startsWith('@')) {
-      debug('loading file', rawData.substring(1))
+      log.info('loading file', rawData.substring(1))
       const valueContents = fs
         .readFileSync(value.substring(1))
         .toString('utf8')
@@ -117,10 +117,10 @@ if (argv.user) {
 }
 
 async function run () {
-  debug('running')
+  log.info('running')
   await plugin.connect()
 
-  debug('connected')
+  log.info('connected')
   fetchOptions.plugin = plugin
   fetchOptions.maxPrice = +argv['max-amount']
 
