@@ -3,15 +3,14 @@
 
 ## Usage
 
+Make sure you're connected to Moneyd. You can connect to the
+[testnet](https://medium.com/interledger-blog/using-moneyd-to-join-the-ilp-testnet-ba64bd42bb14)
+or the
+[livenet](https://medium.com/interledger-blog/joining-the-live-ilp-network-eab123a73665).
+
 ```sh
 # install the package globally to add binaries
 $ npm install -g ilp-curl
-
-# Configure an ILP account. Currently, the easiest way to do this is with the
-# XRP testnet, but other networks and currencies are supported.  Go to
-# https://ripple.com/build/xrp-test-net/ to get testnet credentials
-$ export ILP_PLUGIN='ilp-plugin-xrp-escrow'
-$ export ILP_CREDENTIALS='{"server":"wss://s.altnet.rippletest.net:51233","secret":"..."}'
 
 # make a paid POST request with JSON parameters
 $ ilp-curl -X POST ilp.example.com/sms --json -F to='+15551234567' -F text='hello'
